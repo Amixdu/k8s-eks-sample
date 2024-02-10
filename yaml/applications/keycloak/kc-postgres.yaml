@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kc-postgres
+  namespace: keycloak
+spec:
+  selector:
+    matchLabels:
+      app: kc-postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kc-postgres
+    spec:
+      containers:
+      - name: kc-postgres
+        image: postgres
+        env:
+          - name: POSTGRES_DB
+            value: keycloak
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            value: keycloak_password
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5432
+          name: postgres
+        securityContext:
+          privileged: false
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: ''
+    volumes:
+      - name: postgres-storage
+        persistentVolumeClaim: 
+          claimName: postgres-pvc
