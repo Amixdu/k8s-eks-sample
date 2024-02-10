@@ -1,7 +1,7 @@
 TIMEOUT=60
 
 kubectl delete -f gateway/aws-vpc-lattice/nginx.yaml
-if timeout $TIMEOUT bash -c "kubectl delete -f gateway/aws-vpc-lattice/nginx-route.yaml"; then
+if timeout $TIMEOUT bash -c "kubectl delete -f gateway/aws-vpc-lattice/httproute.yaml"; then
   
   kubectl delete -f gateway/aws-vpc-lattice/gateway.yaml
   kubectl delete -f gateway/aws-vpc-lattice/gatewayclass.yaml

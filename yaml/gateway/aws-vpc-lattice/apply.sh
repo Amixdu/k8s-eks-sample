@@ -1,4 +1,4 @@
-kubectl apply -f /gateway/aws-vpc-lattice/namespace.yaml
+kubectl apply -f gateway/aws-vpc-lattice/namespace.yaml
 
 eksctl create iamserviceaccount \
    --cluster=par-cluster \
