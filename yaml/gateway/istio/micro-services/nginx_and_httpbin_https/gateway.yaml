@@ -1,0 +1,55 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway
+  namespace: istio-gateway
+  annotations:
+    cert-manager.io/cluster-issuer: production-cluster-issuer
+spec:
+  gatewayClassName: istio
+  listeners:
+  - name: http-listener
+    hostname: "*.par.sandboxcloud.xyz"
+    port: 80
+    protocol: HTTP
+    allowedRoutes:
+      namespaces:
+        from: All
+
+  # HTTPS - Listener for path based (one domain)
+  - name: api-https-listener
+    hostname: api.par.sandboxcloud.xyz
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: "par-api-cert"
+    allowedRoutes:
+      namespaces:
+        from: All
+
+  # HTTPS - Subdomain listeners
+  - name: nginx-https-listener
+    hostname: api.nginx.par.sandboxcloud.xyz
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: "nginx-cert"
+    allowedRoutes:
+      namespaces:
+        from: All
+  - name: httpbin-https-listener
+    hostname: api.httpbin.par.sandboxcloud.xyz
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: "httpbin-cert"
+    allowedRoutes:
+      namespaces:
+        from: All
+  

@@ -1,0 +1,56 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: nginx-http-redirect
+  namespace: default
+spec:
+  parentRefs:
+    - name: gateway
+      namespace: istio-gateway
+      sectionName: http-listener
+  hostnames: 
+    - api.nginx.par.sandboxcloud.xyz
+  rules:
+    - filters:
+      - type: RequestRedirect
+        requestRedirect:
+            scheme: https
+            statusCode: 301
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: httpbin-http-redirect
+  namespace: default
+spec:
+  parentRefs:
+    - name: gateway
+      namespace: istio-gateway
+      sectionName: http-listener
+  hostnames: 
+    - api.httpbin.par.sandboxcloud.xyz
+  rules:
+    - filters:
+      - type: RequestRedirect
+        requestRedirect:
+            scheme: https
+            statusCode: 301
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: api-http-redirect
+  namespace: default
+spec:
+  parentRefs:
+    - name: gateway
+      namespace: istio-gateway
+      sectionName: http-listener
+  hostnames: 
+    - api.par.sandboxcloud.xyz
+  rules:
+    - filters:
+      - type: RequestRedirect
+        requestRedirect:
+            scheme: https
+            statusCode: 301
