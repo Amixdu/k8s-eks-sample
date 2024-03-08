@@ -37,4 +37,17 @@ spec:
     backendRefs:
     - name: {{ .Values.apps.httpbin.service.name }}
       port: {{ .Values.apps.httpbin.portData.port }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: {{ .Values.gateway.httpsListener.pathBased.pathUrls.helloServer }}
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: {{ .Values.apps.helloServer.service.name }}
+      port: {{ .Values.apps.helloServer.portData.port }}
     

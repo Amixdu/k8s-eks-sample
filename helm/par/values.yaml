@@ -13,18 +13,30 @@ gateway:
       name: api-https-listener
       hostname: api.par.sandboxcloud.xyz
       port: 443
+      certificateRef: "par-api-cert"
       pathUrls:
         nginx: /nginx
         httpbin: /httpbin
+        helloServer: /hello
     domainBased:
       nginx:
         name: nginx-https-listener
         hostname: api.nginx.par.sandboxcloud.xyz
         port: 443
+        certificateRef: "nginx-cert"
+        routeName: nginx-route
       httpbin:
         name: httpbin-https-listener
         hostname: api.httpbin.par.sandboxcloud.xyz
         port: 443
+        certificateRef: "httpbin-cert"
+        routeName: httpbin-route
+      helloServer:
+        name: hello-server-https-listener
+        hostname: api.hello.par.sandboxcloud.xyz
+        port: 443
+        certificateRef: "hello-server-cert"
+        routeName: hello-server-route
 
 apps:
   nginx:
@@ -49,6 +61,17 @@ apps:
     portData:
       port: 8001
       targetPort: 80
+  helloServer:
+    name: hello-server
+    replicas: 2
+    service:
+      name: hello-server
+    image: 
+      name: amixxdu/hello-node-server
+      tag: 2.0.0
+    portData:
+      port: 8002
+      targetPort: 3001
 
 certificateManager:
   clusterIssuer: production-cluster-issuer

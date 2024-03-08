@@ -1,7 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: nginx-route
+  name: {{ .Values.gateway.httpsListener.domainBased.nginx.routeName }}
   namespace: default
 spec:
   parentRefs:
@@ -22,7 +22,7 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: httpbin-route
+  name: {{ .Values.gateway.httpsListener.domainBased.httpbin.routeName }}
   namespace: default
 spec:
   parentRefs:
@@ -39,4 +39,24 @@ spec:
     backendRefs:
     - name: {{ .Values.apps.httpbin.service.name }}
       port: {{ .Values.apps.httpbin.portData.port }}
-    
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Values.gateway.httpsListener.domainBased.helloServer.routeName }}
+  namespace: default
+spec:
+  parentRefs:
+    - name: {{ .Values.gateway.name }}
+      namespace: {{ .Values.gateway.namespace }}
+      sectionName: {{ .Values.gateway.httpsListener.domainBased.helloServer.name }}
+  hostnames: 
+    - {{ .Values.gateway.httpsListener.domainBased.helloServer.hostname }}
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: {{ .Values.apps.helloServer.service.name }}
+      port: {{ .Values.apps.helloServer.portData.port }}

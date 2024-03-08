@@ -17,7 +17,7 @@ spec:
       containers:
       - image: {{ .Values.apps.httpbin.image.name }}
         imagePullPolicy: IfNotPresent
-        name: httpbin
+        name: {{ .Values.apps.httpbin.name }}
         ports:
         - containerPort: {{ .Values.apps.httpbin.portData.targetPort }}
 ---

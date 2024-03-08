@@ -24,7 +24,7 @@ spec:
     tls:
       mode: Terminate
       certificateRefs:
-      - name: "par-api-cert"
+      - name: {{ .Values.gateway.httpsListener.pathBased.certificateRef }}
     allowedRoutes:
       namespaces:
         from: All
@@ -37,7 +37,7 @@ spec:
     tls:
       mode: Terminate
       certificateRefs:
-      - name: "nginx-cert"
+      - name: {{ .Values.gateway.httpsListener.domainBased.nginx.certificateRef }}
     allowedRoutes:
       namespaces:
         from: All
@@ -48,7 +48,18 @@ spec:
     tls:
       mode: Terminate
       certificateRefs:
-      - name: "httpbin-cert"
+      - name: {{ .Values.gateway.httpsListener.domainBased.httpbin.certificateRef }}
+    allowedRoutes:
+      namespaces:
+        from: All
+  - name: {{ .Values.gateway.httpsListener.domainBased.helloServer.name }}
+    hostname: {{ .Values.gateway.httpsListener.domainBased.helloServer.hostname }}
+    protocol: HTTPS
+    port: {{ .Values.gateway.httpsListener.domainBased.helloServer.port }}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: {{ .Values.gateway.httpsListener.domainBased.helloServer.certificateRef }}
     allowedRoutes:
       namespaces:
         from: All
