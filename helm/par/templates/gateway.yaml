@@ -1,0 +1,55 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ .Values.gateway.name }}
+  namespace: {{ .Values.gateway.namespace }}
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.certificateManager.clusterIssuer }}
+spec:
+  gatewayClassName: {{ .Values.gatewayClass.name }}
+  listeners:
+  - name: {{ .Values.gateway.httpListener.name }}
+    hostname: "{{ .Values.gateway.httpListener.hostname }}"
+    port: {{ .Values.gateway.httpListener.port }}
+    protocol: HTTP
+    allowedRoutes:
+      namespaces:
+        from: All
+
+  # HTTPS - Listener for path based (one domain)
+  - name: {{ .Values.gateway.httpsListener.pathBased.name }}
+    hostname: {{ .Values.gateway.httpsListener.pathBased.hostname }}
+    protocol: HTTPS
+    port: {{ .Values.gateway.httpsListener.pathBased.port }}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: "par-api-cert"
+    allowedRoutes:
+      namespaces:
+        from: All
+
+  # HTTPS - Subdomain listeners
+  - name: {{ .Values.gateway.httpsListener.domainBased.nginx.name }}
+    hostname: {{ .Values.gateway.httpsListener.domainBased.nginx.hostname }}
+    protocol: HTTPS
+    port: {{ .Values.gateway.httpsListener.domainBased.nginx.port }}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: "nginx-cert"
+    allowedRoutes:
+      namespaces:
+        from: All
+  - name: {{ .Values.gateway.httpsListener.domainBased.httpbin.name }}
+    hostname: {{ .Values.gateway.httpsListener.domainBased.httpbin.hostname }}
+    protocol: HTTPS
+    port: {{ .Values.gateway.httpsListener.domainBased.httpbin.port }}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: "httpbin-cert"
+    allowedRoutes:
+      namespaces:
+        from: All
+  

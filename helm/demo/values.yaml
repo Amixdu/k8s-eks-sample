@@ -1,0 +1,7 @@
+appName: nginx
+image:
+  name: nginx
+  tag: latest
+
+container:
+  name: nginx

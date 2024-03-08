@@ -1,0 +1,54 @@
+gatewayClass:
+  name: istio
+
+gateway:
+  namespace: istio-gateway
+  name: gateway
+  httpListener: 
+    name: http-listener
+    hostname: "*.par.sandboxcloud.xyz"
+    port: 80
+  httpsListener:
+    pathBased:
+      name: api-https-listener
+      hostname: api.par.sandboxcloud.xyz
+      port: 443
+      pathUrls:
+        nginx: /nginx
+        httpbin: /httpbin
+    domainBased:
+      nginx:
+        name: nginx-https-listener
+        hostname: api.nginx.par.sandboxcloud.xyz
+        port: 443
+      httpbin:
+        name: httpbin-https-listener
+        hostname: api.httpbin.par.sandboxcloud.xyz
+        port: 443
+
+apps:
+  nginx:
+    name: nginx
+    replicas: 1
+    service:
+      name: nginx
+    image: 
+      name: nginx
+      tag: latest
+    portData:
+      port: 8000
+      targetPort: 80
+  httpbin:
+    name: httpbin
+    replicas: 1
+    service:
+      name: httpbin
+    image: 
+      name: docker.io/kong/httpbin
+      tag: latest
+    portData:
+      port: 8001
+      targetPort: 80
+
+certificateManager:
+  clusterIssuer: production-cluster-issuer

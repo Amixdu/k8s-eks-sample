@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.apps.httpbin.name }}
+spec:
+  replicas: {{ .Values.apps.httpbin.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.httpbin.name }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apps.httpbin.name }}
+        version: v1
+    spec:
+      containers:
+      - image: {{ .Values.apps.httpbin.image.name }}
+        imagePullPolicy: IfNotPresent
+        name: httpbin
+        ports:
+        - containerPort: {{ .Values.apps.httpbin.portData.targetPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.apps.httpbin.service.name }}
+  labels:
+    app: {{ .Values.apps.httpbin.name }}
+    service: {{ .Values.apps.httpbin.service.name }}
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.apps.httpbin.portData.port }}
+    targetPort: {{ .Values.apps.httpbin.portData.targetPort }}
+  selector:
+    app: {{ .Values.apps.httpbin.name }}

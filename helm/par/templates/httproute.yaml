@@ -1,0 +1,40 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http
+  namespace: default
+spec:
+  parentRefs:
+    - name: {{ .Values.gateway.name }}
+      namespace: {{ .Values.gateway.namespace }}
+      sectionName: {{ .Values.gateway.httpsListener.pathBased.name }}
+  hostnames: 
+    - {{ .Values.gateway.httpsListener.pathBased.hostname }}
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: {{ .Values.gateway.httpsListener.pathBased.pathUrls.nginx }}
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: {{ .Values.apps.nginx.service.name }}
+      port: {{ .Values.apps.nginx.portData.port }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: {{ .Values.gateway.httpsListener.pathBased.pathUrls.httpbin }}
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: {{ .Values.apps.httpbin.service.name }}
+      port: {{ .Values.apps.httpbin.portData.port }}
+    
